@@ -1,0 +1,423 @@
+@use "sass:math";
+@use "_colors.scss" as *;
+
+// Мінімальна ширина сторінки
+$minWidth: 320;
+// Ширина полотна (макету)
+$maxWidth: 1920;
+// Ширина обмежуючого контейнера (0 = немає обмеження)
+$maxWidthContainer: 1170;
+// Загальний відступ у контейнера
+// (30 = по 15px ліворуч і праворуч, 0 = немає відступу)
+$containerPadding: 30;
+
+// Ширина спрацьовування першого брейкпоінту
+$containerWidth: $maxWidthContainer + $containerPadding;
+
+// Брейк-поїнти
+$pc: $containerWidth; // ПК, ноутбуки, деякі планшети у горизонтальному положенні
+$tablet: 991.98; // Планшети, деякі телефони в горизонтальному положенні
+$mobile: 767.98; // Телефони L
+$mobileSmall: 479.98; // Телефони S
+
+// Тип адаптива:
+// 1 = чуйність (у контейнера немає брейкпоінтів),
+// 2 = по брейк-поїнт (контейнер змінює свою ширину по брейк-поїнт)
+$responsiveType: 1;
+
+//Percent
+@function percent($px, $from: 100) {
+   $result: math.div($px, $from) * 100%;
+   @return $result;
+}
+
+//REM
+@function toRem($px, $current: 16) {
+   $result: math.div($px, $current) + rem;
+   @return $result;
+}
+
+//EM
+@function toEm($px, $current: 16) {
+   $result: math.div($px, $current) + em;
+   @return $result;
+}
+
+// Адаптивна властивість (clamp)
+@mixin adaptiveValue($property, $startSize, $minSize: $minSize, $keepSize: 0, $widthFrom: $containerWidth, $widthTo: $minWidth) {
+   @if ($startSize==0) {
+      $startSize: 0.000001;
+   }
+
+   @if ($minSize==0) {
+      $minSize: 0.000001;
+   }
+
+   @if ($widthFrom ==$containerWidth and $maxWidthContainer ==0) {
+      $widthFrom: $maxWidth;
+   }
+
+   // Брейк-поїнти в EM
+   $widthFromMedia: toEm($widthFrom);
+   $widthToMedia: toEm($widthTo);
+
+   // Формула плаваючого значення
+   // Источник: https://css-tricks.com/linearly-scale-font-size-with-css-clamp-based-on-the-viewport/
+   $slope: math.div(($startSize - $minSize), ($widthFrom - $widthTo));
+   $yIntersection: -$widthTo * $slope + $minSize;
+
+   @if ($yIntersection==0) {
+      $yIntersection: 0.000001;
+   }
+
+   $flyValue: #{$yIntersection}px " + "#{$slope * 100}vw;
+
+   // Отримання значення властивості
+   $propertyValue: #{"clamp(" #{$minSize}px ","$flyValue ","#{$startSize}px ")"
+}
+
+;
+
+// Якщо негативні значення
+@if ($minSize > $startSize) {
+   $propertyValue: #{"clamp(" #{$startSize}px ","$flyValue ","#{$minSize}px ")"
+}
+
+;
+}
+
+// Встановлюємо значення за замовчуванням
+@if $keepSize !=1 and $keepSize !=3 {
+   @media (min-width: $widthFromMedia) {
+      #{$property}: #{$startSize}px;
+   }
+}
+
+// Адаптуємо розмір у проміжку між зазначеними ширинами в'юпорту
+@media (min-width: $widthToMedia) and (max-width: $widthFromMedia) {
+   #{$property}: $propertyValue;
+}
+
+@if $keepSize !=1 and $keepSize !=2 {
+   @media (max-width: $widthToMedia) {
+      #{$property}: #{$minSize}px;
+   }
+}
+}
+
+@mixin typography($size: "S", $weight: 400, $adapt: 1, $sizeMob: 0) {
+   $fontSize: 14;
+   $fontSizeMob: 14;
+   $fontWeight: $weight;
+
+   @if ($size =="T") {
+      $fontSize: 12;
+   }
+
+   @if ($size =="S") {
+      $fontSize: 14;
+   }
+
+   @if ($size =="M") {
+      $fontSize: 16;
+      $fontSizeMob: 14;
+   }
+
+   @if ($size =="L") {
+      $fontSize: 18;
+      $fontSizeMob: 16;
+   }
+
+   @if ($size =="XL") {
+      $fontSize: 20;
+      $fontSizeMob: 18;
+   }
+
+   @if ($size =="XXL") {
+      $fontSize: 24;
+      $fontSizeMob: 20;
+   }
+
+   @if ($size =="h1") {
+      $fontSize: 56;
+      $fontSizeMob: 32;
+   }
+
+   @if ($size =="h2") {
+      $fontSize: 48;
+      $fontSizeMob: 28;
+   }
+
+   @if ($size =="h3") {
+      $fontSize: 40;
+      $fontSizeMob: 26;
+   }
+
+   @if ($size =="h4") {
+      $fontSize: 36;
+      $fontSizeMob: 24;
+   }
+
+   @if ($size =="h5") {
+      $fontSize: 32;
+      $fontSizeMob: 22;
+   }
+
+   @if ($size =="d1") {
+      $fontSize: 72;
+      $fontSizeMob: 38;
+   }
+
+   @if ($sizeMob > 0) {
+      $fontSizeMob: $sizeMob;
+   }
+
+   @if ($adapt ==1) {
+      @include adaptiveValue("font-size", $fontSize, $fontSizeMob);
+   }
+
+   @else {
+      font-size: toRem($fontSize);
+   }
+
+   font-weight: $fontWeight;
+   line-height: 1.5;
+}
+
+
+// =====================================================================================
+@mixin abs-position ($top:null,$left:null,$right:null,$bottom:null) {
+   position: absolute;
+
+   @if($top != null) {
+      top: $top;
+   }
+   @if($left != null) {
+      left: $left;
+   }
+   @if($right != null) {
+      right: $right;
+   }
+   @if($bottom != null) {
+      bottom: $bottom;
+   }
+}
+
+@mixin absPositionCentered ($top: 50%, $left: 50%, $position:absolute, $translate:-50% -50%) {
+   position: $position;
+   top: $top;
+   left: $left;
+   translate: $translate;
+}
+
+@mixin linkHoverCentered ($width:0,$height:toRem(2),$backgroundColor:$white,$translate:-50% 0,$transition:width 0.3s) {
+   width: $width;
+   height: $height;
+   translate: $translate;
+   background-color: $backgroundColor;
+   transition: $transition;
+   @include abs-position($bottom:0,$left:50%);
+}
+
+@mixin linkHoverLeft ($width: 0, $height: toRem(2), $backgroundColor: $white, $transition: width 0.3s) {
+   width: $width;
+   height: $height;
+   background-color: $backgroundColor;
+   transition: $transition;
+   @include abs-position($bottom: 0, $left: 0);
+}
+
+
+// ===========================================================================================
+// -----------------------------
+// 1. СИСТЕМА ЗМІННИХ
+// -----------------------------
+
+// Кольори
+$colors: (
+   primary: #3498db,
+   secondary: #2ecc71,
+   danger: #e74c3c,
+   warning: #f39c12,
+   dark: #1e1e1e,
+   light: #ffffff,
+   gray: #999999
+);
+
+// Теми (Light / Dark)
+$themes: (
+   light: (bg: map-get($colors, light),
+      text: map-get($colors, dark)),
+   dark: (bg: map-get($colors, dark),
+      text: map-get($colors, light))
+);
+
+// Відступи (spacing scale)
+$spacing-scale: (
+   xs: 4px,
+   sm: 8px,
+   md: 16px,
+   lg: 24px,
+   xl: 40px
+);
+
+// Брейкпоінти
+$breakpoints: (
+   mobile: 480px,
+   tablet: 768px,
+   laptop: 1024px,
+   desktop: 1440px
+);
+
+
+// -----------------------------
+// 2. ПРОСУНУТІ ФУНКЦІЇ
+// -----------------------------
+
+// Отримання кольору з палітри
+@function color($name) {
+   @return map-get($colors, $name);
+}
+
+// Отримання spacing
+@function space($size) {
+   @return map-get($spacing-scale, $size);
+}
+
+// Отримання теми
+@function theme-color($theme, $key) {
+   @return map-get(map-get($themes, $theme), $key);
+}
+
+// Динамічний REM
+@function rem($px, $base: 16) {
+   @return ($px / $base) * 1rem;
+}
+
+// Генерація rgba
+@function alpha($color, $opacity: 1) {
+   @return rgba(red($color), green($color), blue($color), $opacity);
+}
+
+// Динамічний fluid font без медіа-запитів
+@function fluid($min, $max, $min-vw: 320, $max-vw: 1440) {
+   $slope: (
+      $max - $min) / ($max-vw - $min-vw
+   );
+$base: $min - $slope * $min-vw;
+@return clamp(#{$min}px, #{$base}px + #{$slope * 100}vw, #{$max}px);
+}
+
+
+// -----------------------------
+// 3. ПРОСУНУТІ MIXIN'И
+// -----------------------------
+
+// 1. Медіа-запити
+@mixin media($device) {
+   @media (max-width: map-get($breakpoints, $device)) {
+      @content;
+   }
+}
+
+// 2. Темізація (Light / Dark)
+@mixin theme($theme: light) {
+   background-color: theme-color($theme, bg);
+   color: theme-color($theme, text);
+}
+
+// 3. Кнопки PRO
+@mixin button($bg: map-get($colors, primary),
+   $color: text-color($bg),
+   $padding: 12px 24px,
+   $radius: 6px) {
+   background: $bg;
+   color: $color;
+   padding: $padding;
+   border-radius: $radius;
+   font-weight: 600;
+   cursor: pointer;
+   box-shadow: 0 4px 8px alpha($bg, 0.3);
+   transition: background 0.3s ease, transform 0.2s ease;
+
+   &:hover {
+      background: lighten($bg, 7%);
+      transform: translateY(-2px);
+   }
+
+   &:active {
+      background: darken($bg, 5%);
+      transform: translateY(1px);
+   }
+}
+
+// 4. Центрування Flex + Grid PRO
+@mixin flex-center($gap: 0, $direction: row, $wrap: nowrap) {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   flex-direction: $direction;
+   flex-wrap: $wrap;
+   gap: $gap;
+}
+
+@mixin grid-center($cols: 2, $gap: 20px) {
+   display: grid;
+   grid-template-columns: repeat($cols, 1fr);
+   place-items: center;
+   gap: $gap;
+}
+
+// 5. Адаптивна типографія PRO
+@mixin text-fluid($min: 16, $max: 32, $weight: 400) {
+   font-size: fluid($min, $max);
+   font-weight: $weight;
+   line-height: 1.4;
+}
+
+// 6. Градієнт PRO
+@mixin gradient($c1, $c2, $angle: 135deg) {
+   background: linear-gradient($angle, $c1, $c2);
+}
+
+// 7. 3D-Ефект при hover
+@mixin hover-3d($rotate: 5deg, $scale: 1.05) {
+   transition: transform 0.3s ease;
+   transform-style: preserve-3d;
+
+   &:hover {
+      transform: perspective(600px) rotateX($rotate) rotateY($rotate) scale($scale);
+   }
+}
+
+// 8. Тіні PRO
+@mixin shadow($size: md) {
+   @if $size ==sm {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   }
+
+   @else if $size ==md {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+   }
+
+   @else if $size ==lg {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+   }
+}
+
+// 9. Анімація fade-slide-in
+@mixin fade-slide-in($distance: 40px, $duration: 0.6s) {
+   animation: fadeSlideIn $duration ease forwards;
+
+   @keyframes fadeSlideIn {
+      from {
+         opacity: 0;
+         transform: translateY($distance);
+      }
+
+      to {
+         opacity: 1;
+         transform: translateY(0);
+      }
+   }
+}

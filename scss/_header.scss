@@ -1,0 +1,237 @@
+@use "_colors.scss" as *;
+@use "_mixins.scss" as *;
+
+
+.header {
+   // display: none;
+   background-color: $black;
+   // position: sticky;
+   position: fixed;
+   top: 0;
+   width: 100%;
+   z-index: 60;
+   // .header__container
+
+   &__container {
+      padding-block: toRem(14);
+   }
+
+   // .header__body
+
+   &__body {
+      display: flex;
+      // align-items: center;
+      gap: toRem(10);
+      justify-content: space-between;
+
+
+      @media (max-width: toEm(915)) {
+        display: flex;
+        flex-direction: column;
+      }
+      @media (min-width: toEm(916)) {
+        align-items: center;
+      }
+   }
+
+   // .header__menu
+   &__menu {
+
+   }
+}
+
+.menu-header {
+   @media (max-width: toEm(915)) {
+     display: block;
+     width: 100%;
+     height: 100%;
+     position: fixed;
+     top: 0;
+     left: -100%;
+     background-color: $white;
+     overflow: auto;
+     transition: all 0.3s;
+     z-index: 3;
+     padding: toRem(230) toRem(15) toRem(30) toRem(15);
+
+     &::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: toRem(205);
+      background-color: $bg-02;
+      z-index: 3;
+      transition: all 0.3s;
+
+      .menu-open & {
+         left: 0;
+      }
+     }
+
+     .menu-open & {
+      left: 0;
+     }
+   }
+   // .menu-header__list
+   &__list {
+      display: flex;
+      align-items: center;
+      @include adaptiveValue('column-gap',42,20);
+      // justify-content: space-evenly;
+      flex-wrap: wrap;
+
+      @media (max-width: toEm(915)) {
+      //   display: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: $black;
+      gap: toRem(30);
+      }
+   }
+
+   // .menu-header__item
+   &__item {
+      font-size: toRem(18);
+      font-weight: 500;
+   }
+
+   // .menu-header__link
+   &__link {
+      position: relative;
+
+      &::after {
+         content: "";
+         @include linkHoverLeft;
+      }
+      @media (max-width: toEm(915)) {
+        font-size: toRem(40);
+      }
+      @media (any-hover: hover) and (any-pointer: fine) {
+        &:hover {
+         &::after {
+            width: 100%;
+         }
+        }
+      }
+   }
+
+   // .menu-header__logo
+   &__logo {
+      width: toRem(100);
+      aspect-ratio: 1;
+      flex-shrink: 0;
+      align-self: center;
+      transition: scale 0.3s;
+      will-change: scale;
+      z-index: 5;
+      @media (any-hover: hover) and (any-pointer: fine) {
+         &:hover {
+            scale: 1.05;
+         }
+      }
+   }
+
+   // .menu-header__buttons
+
+   &__buttons {}
+
+   @media (max-width: toEm(915)) {
+      // flex-direction: column;
+   }
+}
+
+.buttons-menu {
+   display: flex;
+   align-items: center;
+   @include adaptiveValue('column-gap',30,10);
+
+   // .buttons-menu__cart
+   &__cart {
+      position: relative;
+      transition: scale 0.3s;
+      will-change: scale;
+      z-index: 5;
+
+      span {
+         font-size: toRem(10);
+         position: absolute;
+         top: 0;
+         right: 0;
+         border-radius: 50%;
+         width: toRem(15);
+         aspect-ratio: 1;
+         background-color: #FF0000;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         flex-shrink: 0;
+      }
+      @media (any-hover: hover) and (any-pointer: fine) {
+        &:hover {
+         scale: 1.05;
+        }
+      }
+   }
+
+   // .buttons-menu__search
+
+   &__search {
+      transition: scale 0.3s;
+      will-change: scale;
+      z-index: 5;
+      @media (any-hover: hover) and (any-pointer: fine) {
+         &:hover {
+            scale: 1.05;
+         }
+      }
+   }
+
+   &__button {
+      z-index: 5;
+      @media (max-width: toEm(375)) {
+        display: none;
+      }
+   }
+
+   @media (max-width: toEm(915)) {
+      display: flex;
+      flex-direction: row-reverse;
+
+     .buttons-menu__button {
+      // width: 100%;
+      flex-grow: 1;
+      justify-content: space-between;
+     }
+   }
+   @media (max-width: toEm(475)) {
+     justify-content: space-between;
+   }
+}
+
+
+.button-cart {
+
+   // .button-cart__icon
+
+   &__icon {
+      width: toRem(34);
+      aspect-ratio: 1;
+      flex-shrink: 0;
+   }
+}
+
+.button-search {
+
+   // .button-search__icon
+
+   &__icon {
+      width: toRem(34);
+      aspect-ratio: 1;
+      flex-shrink: 0;
+   }
+}
+
+

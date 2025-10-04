@@ -1,0 +1,63 @@
+@font-face {
+   font-family: 'iconfont';
+   src: url('../fonts/iconfont.woff2') format('woff2');
+   font-weight: normal;
+   font-style: normal;
+   font-display: block;
+}
+
+[class*="--icon-"] {
+   content: "";
+   font-family: 'iconfont';
+   line-height: 1 !important;
+   /* Better Font Rendering =========== */
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+}
+
+[class*="--icon-play-icon"]::before {
+   content: "\e900";
+}
+
+[class*="--icon-card"]::before {
+   content: "\e901";
+}
+
+[class*="--icon-discord"]::before {
+   content: "\e902";
+}
+
+[class*="--icon-facebook"]::before {
+   content: "\e903";
+}
+
+[class*="--icon-logo"]::before {
+   content: "\e904";
+}
+
+[class*="--icon-quotes"]::before {
+   content: "\e905";
+}
+
+[class*="--icon-search"]::before {
+   content: "\e906";
+}
+
+[class*="--icon-linkeldn"]::before {
+   content: "\e907";
+}
+
+[class*="--icon-twitter"]::before {
+   content: "\e908";
+}
+
+[class*="--icon-star-active"]::before {
+   content: "\e909";
+}
+
+[class*="--icon-star-inactive"]::before {
+   content: "\e90b";
+   color: #ccc;
+}
+
+
