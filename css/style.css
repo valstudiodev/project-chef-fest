@@ -916,6 +916,10 @@ textarea {
   }
 }
 
+.button-cart {
+  position: relative;
+  z-index: 10;
+}
 .button-cart__icon {
   width: 2.125rem;
   aspect-ratio: 1;
@@ -923,6 +927,10 @@ textarea {
       flex-shrink: 0;
 }
 
+.button-search {
+  position: relative;
+  z-index: 10;
+}
 .button-search__icon {
   width: 2.125rem;
   aspect-ratio: 1;

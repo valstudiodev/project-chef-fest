@@ -213,7 +213,8 @@
 
 
 .button-cart {
-
+   position: relative;
+   z-index: 10;
    // .button-cart__icon
 
    &__icon {
@@ -224,7 +225,8 @@
 }
 
 .button-search {
-
+   position: relative;
+   z-index: 10;
    // .button-search__icon
 
    &__icon {
